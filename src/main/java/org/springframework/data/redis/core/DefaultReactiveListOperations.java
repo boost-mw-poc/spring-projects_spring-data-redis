@@ -258,7 +258,7 @@ class DefaultReactiveListOperations<K, V> implements ReactiveListOperations<K, V
 
 		Assert.notNull(key, "Key must not be null");
 		Assert.notNull(timeout, "Duration must not be null");
-		Assert.isTrue(isZeroOrGreaterOneSecond(timeout), "Duration must be either zero or greater or equal to 1 second");
+		Assert.isTrue(TimeoutUtils.isZeroOrGreaterThanOneSecond(timeout), "Duration must be either zero or greater or equal to 1 second");
 
 		return createMono(connection -> connection.blPop(Collections.singletonList(rawKey(key)), timeout)
 				.mapNotNull(popResult -> readValue(popResult.getValue())));
@@ -286,7 +286,7 @@ class DefaultReactiveListOperations<K, V> implements ReactiveListOperations<K, V
 
 		Assert.notNull(key, "Key must not be null");
 		Assert.notNull(timeout, "Duration must not be null");
-		Assert.isTrue(isZeroOrGreaterOneSecond(timeout), "Duration must be either zero or greater or equal to 1 second");
+		Assert.isTrue(TimeoutUtils.isZeroOrGreaterThanOneSecond(timeout), "Duration must be either zero or greater or equal to 1 second");
 
 		return createMono(connection -> connection.brPop(Collections.singletonList(rawKey(key)), timeout)
 				.mapNotNull(popResult -> readValue(popResult.getValue())));
@@ -308,7 +308,7 @@ class DefaultReactiveListOperations<K, V> implements ReactiveListOperations<K, V
 		Assert.notNull(sourceKey, "Source key must not be null");
 		Assert.notNull(destinationKey, "Destination key must not be null");
 		Assert.notNull(timeout, "Duration must not be null");
-		Assert.isTrue(isZeroOrGreaterOneSecond(timeout), "Duration must be either zero or greater or equal to 1 second");
+		Assert.isTrue(TimeoutUtils.isZeroOrGreaterThanOneSecond(timeout), "Duration must be either zero or greater or equal to 1 second");
 
 		return createMono(connection -> connection.bRPopLPush(rawKey(sourceKey), rawKey(destinationKey), timeout)
 				.map(this::readRequiredValue));
@@ -334,16 +334,6 @@ class DefaultReactiveListOperations<K, V> implements ReactiveListOperations<K, V
 		Assert.notNull(function, "Function must not be null");
 
 		return template.doCreateFlux(connection -> function.apply(connection.listCommands()));
-	}
-
-	/**
-	 * Determines if the timeout duration is either {@literal 0} or greater than or equal to {@code 1 seconds}.
-	 *
-	 * @param timeout the duration to check
-	 * @return whether the duration is either {@literal 0} or greater than or equal to {@code 1 seconds}.
-	 */
-	static boolean isZeroOrGreaterOneSecond(Duration timeout) {
-		return timeout.isZero() || timeout.compareTo(Duration.ofSeconds(1)) >= 0;
 	}
 
 	private ByteBuffer rawKey(K key) {
