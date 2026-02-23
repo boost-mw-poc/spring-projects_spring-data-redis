@@ -23,6 +23,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.data.redis.connection.BitFieldSubCommands
 import org.springframework.data.redis.core.types.Expiration
+import org.springframework.data.redis.core.ValueOperations.CompareOperator
 import reactor.core.publisher.Mono
 import java.time.Duration
 import java.util.concurrent.TimeUnit
@@ -460,7 +461,7 @@ class ReactiveValueOperationsExtensionsUnitTests {
 	fun bitField() {
 
 		val operations = mockk<ReactiveValueOperations<String, String>>()
-		val commands = BitFieldSubCommands.create();
+		val commands = BitFieldSubCommands.create()
 		every { operations.bitField(any(), any()) } returns Mono.just(listOf(1L))
 
 		runBlocking {
@@ -486,4 +487,50 @@ class ReactiveValueOperationsExtensionsUnitTests {
 			operations.delete("foo")
 		}
 	}
+
+	@Test
+	fun `compare and delete and return an empty Mono`() {
+
+		val operations = mockk<ReactiveValueOperations<String, String>>()
+		every { operations.compareAndDelete(any<String>(), any<String>()) } returns Mono.just(true)
+
+		runBlocking {
+			assertThat(operations.compareAndDeleteAndAwait("foo", "bar")).isTrue()
+		}
+
+		verify {
+			operations.compareAndDelete("foo", "bar")
+		}
+	}
+
+	@Test
+	fun `compare and delete if equal and return an empty Mono`() {
+
+		val operations = mockk<ReactiveValueOperations<String, String>>()
+		every { operations.compareAndDelete(any<String>(), any<CompareOperator<String>>()) } returns Mono.just(true)
+
+		runBlocking {
+			assertThat(operations.compareAndDeleteAndAwait("foo", CompareOperator.ifEqual("bar"))).isTrue()
+		}
+
+		verify {
+			operations.compareAndDelete("foo", CompareOperator.ifEqual("bar"))
+		}
+	}
+
+	@Test
+	fun `compare and delete if not equal and return an empty Mono`() {
+
+		val operations = mockk<ReactiveValueOperations<String, String>>()
+		every { operations.compareAndDelete(any<String>(), any<CompareOperator<String>>()) } returns Mono.just(true)
+
+		runBlocking {
+			assertThat(operations.compareAndDeleteAndAwait("foo", CompareOperator.ifNotEqual("bar"))).isTrue()
+		}
+
+		verify {
+			operations.compareAndDelete("foo", CompareOperator.ifNotEqual("bar"))
+		}
+	}
+
 }

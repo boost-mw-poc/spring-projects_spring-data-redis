@@ -68,6 +68,7 @@ import org.springframework.data.redis.connection.RedisStreamCommands.XAddOptions
 import org.springframework.data.redis.connection.RedisStreamCommands.XClaimOptions;
 import org.springframework.data.redis.connection.RedisStreamCommands.XTrimOptions;
 import org.springframework.data.redis.connection.RedisStringCommands.BitOperation;
+import org.springframework.data.redis.connection.RedisStringCommands.DeleteOption;
 import org.springframework.data.redis.connection.RedisStringCommands.SetOption;
 import org.springframework.data.redis.connection.RedisZSetCommands.ZAddArgs;
 import org.springframework.data.redis.connection.SortParameters.Order;
@@ -122,6 +123,7 @@ import org.springframework.util.ObjectUtils;
  * @author Tihomir Mateev
  * @author Jeonggyu Choi
  * @author Viktoriya Kutsarova
+ * @author Yordan Tsintsov
  */
 public abstract class AbstractConnectionIntegrationTests {
 
@@ -3232,6 +3234,98 @@ public abstract class AbstractConnectionIntegrationTests {
 		assertThat(result.get(0)).isEqualTo(Boolean.FALSE);
 		assertThat(result.get(1)).isEqualTo(Boolean.FALSE);
 		assertThat(((Long) result.get(2)).doubleValue()).isCloseTo(-2, Offset.offset(0d));
+	}
+
+	@Test
+	@EnabledOnCommand("DELEX")
+	void delexShouldDeleteKeyWhenValueEqualForEqualOption() {
+
+		String key = "delex-" + UUID.randomUUID();
+		actual.add(connection.set(key, "bar"));
+
+		actual.add(connection.delex(key, "bar", DeleteOption.ifEqual()));
+		actual.add(connection.exists(key));
+
+		List<Object> result = getResults();
+		assertThat(result.get(0)).isEqualTo(Boolean.TRUE);
+		assertThat(result.get(1)).isEqualTo(Boolean.TRUE);
+		assertThat(result.get(2)).isEqualTo(Boolean.FALSE);
+	}
+
+	@Test
+	@EnabledOnCommand("DELEX")
+	void delexShouldNotDeleteKeyWhenValueNotEqualForEqualOption() {
+
+		String key = "delex-" + UUID.randomUUID();
+		actual.add(connection.set(key, "bar"));
+
+		actual.add(connection.delex(key, "foo", DeleteOption.ifEqual()));
+		actual.add(connection.exists(key));
+
+		List<Object> result = getResults();
+		assertThat(result.get(0)).isEqualTo(Boolean.TRUE);
+		assertThat(result.get(1)).isEqualTo(Boolean.FALSE);
+		assertThat(result.get(2)).isEqualTo(Boolean.TRUE);
+	}
+
+	@Test
+	@EnabledOnCommand("DELEX")
+	void delexShouldNotDeleteKeyWhenKeyDoesNotExistForEqualOption() {
+
+		String key = "delex-" + UUID.randomUUID();
+
+		actual.add(connection.delex(key, "bar", DeleteOption.ifEqual()));
+		actual.add(connection.exists(key));
+
+		List<Object> result = getResults();
+		assertThat(result.get(0)).isEqualTo(Boolean.FALSE);
+		assertThat(result.get(1)).isEqualTo(Boolean.FALSE);
+	}
+
+	@Test
+	@EnabledOnCommand("DELEX")
+	void delexShouldDeleteKeyWhenValueNotEqualForNotEqualOption() {
+
+		String key = "delex-" + UUID.randomUUID();
+		actual.add(connection.set(key, "bar"));
+
+		actual.add(connection.delex(key, "foo", DeleteOption.ifNotEqual()));
+		actual.add(connection.exists(key));
+
+		List<Object> result = getResults();
+		assertThat(result.get(0)).isEqualTo(Boolean.TRUE);
+		assertThat(result.get(1)).isEqualTo(Boolean.TRUE);
+		assertThat(result.get(2)).isEqualTo(Boolean.FALSE);
+	}
+
+	@Test
+	@EnabledOnCommand("DELEX")
+	void delexShouldNotDeleteKeyWhenValueEqualForNotEqualOption() {
+
+		String key = "delex-" + UUID.randomUUID();
+		actual.add(connection.set(key, "bar"));
+
+		actual.add(connection.delex(key, "bar", DeleteOption.ifNotEqual()));
+		actual.add(connection.exists(key));
+
+		List<Object> result = getResults();
+		assertThat(result.get(0)).isEqualTo(Boolean.TRUE);
+		assertThat(result.get(1)).isEqualTo(Boolean.FALSE);
+		assertThat(result.get(2)).isEqualTo(Boolean.TRUE);
+	}
+
+	@Test
+	@EnabledOnCommand("DELEX")
+	void delexShouldNotDeleteKeyWhenKeyDoesNotExistForNotEqualOption() {
+
+		String key = "delex-" + UUID.randomUUID();
+
+		actual.add(connection.delex(key, "bar", DeleteOption.ifNotEqual()));
+		actual.add(connection.exists(key));
+
+		List<Object> result = getResults();
+		assertThat(result.get(0)).isEqualTo(Boolean.FALSE);
+		assertThat(result.get(1)).isEqualTo(Boolean.FALSE);
 	}
 
 	@Test // DATAREDIS-438

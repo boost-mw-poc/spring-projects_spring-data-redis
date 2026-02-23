@@ -43,6 +43,7 @@ import org.springframework.data.redis.ObjectFactory;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.ReactiveOperationsTestParams.Fixture;
+import org.springframework.data.redis.core.ValueOperations.CompareOperator;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.data.redis.test.condition.EnabledOnCommand;
@@ -398,6 +399,156 @@ public class DefaultReactiveValueOperationsIntegrationTests<K, V> {
 
 		valueOperations.multiGet(Arrays.asList(key2, key1, absent)).as(StepVerifier::create)
 				.expectNext(Arrays.asList(value2, value1, absentValue)).verifyComplete();
+	}
+
+	@Test
+	@EnabledOnCommand("DELEX")
+	void compareAndDeleteIfValueEqual() {
+
+		K key = keyFactory.instance();
+		V value = valueFactory.instance();
+
+		valueOperations.set(key, value)
+				.as(StepVerifier::create)
+				.expectNext(true)
+				.verifyComplete();
+
+		valueOperations.compareAndDelete(key, value)
+				.as(StepVerifier::create)
+				.expectNext(true)
+				.verifyComplete();
+	}
+
+	@Test
+	@EnabledOnCommand("DELEX")
+	void compareAndDeleteIfValueNotEqual() {
+
+		K key = keyFactory.instance();
+		V value = valueFactory.instance();
+		V otherValue = valueFactory.instance();
+
+		valueOperations.set(key, value)
+				.as(StepVerifier::create)
+				.expectNext(true)
+				.verifyComplete();
+
+		valueOperations.compareAndDelete(key, otherValue)
+				.as(StepVerifier::create)
+				.expectNext(false)
+				.verifyComplete();
+	}
+
+	@Test
+	@EnabledOnCommand("DELEX")
+	void compareAndDeleteWithNonExistingKey() {
+
+		K key = keyFactory.instance();
+		V value = valueFactory.instance();
+
+		valueOperations.compareAndDelete(key, value)
+				.as(StepVerifier::create)
+				.expectNext(false)
+				.verifyComplete();
+	}
+
+	@Test
+	@EnabledOnCommand("DELEX")
+	void compareAndDeleteWithCompareOperatorWithValueEqualForIfEqual() {
+
+		K key = keyFactory.instance();
+		V value = valueFactory.instance();
+
+		valueOperations.set(key, value)
+				.as(StepVerifier::create)
+				.expectNext(true)
+				.verifyComplete();
+
+		valueOperations.compareAndDelete(key, CompareOperator.ifEqual(value))
+				.as(StepVerifier::create)
+				.expectNext(true)
+				.verifyComplete();
+	}
+
+	@Test
+	@EnabledOnCommand("DELEX")
+	void compareAndDeleteWithCompareOperatorWithValueNotEqualForIfEqual() {
+
+		K key = keyFactory.instance();
+		V value = valueFactory.instance();
+		V otherValue = valueFactory.instance();
+
+		valueOperations.set(key, value)
+				.as(StepVerifier::create)
+				.expectNext(true)
+				.verifyComplete();
+
+		valueOperations.compareAndDelete(key, CompareOperator.ifEqual(otherValue))
+				.as(StepVerifier::create)
+				.expectNext(false)
+				.verifyComplete();
+	}
+
+	@Test
+	@EnabledOnCommand("DELEX")
+	void compareAndDeleteWithCompareOperatorWithValueEqualForNonExistingKey() {
+
+		K key = keyFactory.instance();
+		V value = valueFactory.instance();
+
+		valueOperations.compareAndDelete(key, CompareOperator.ifEqual(value))
+				.as(StepVerifier::create)
+				.expectNext(false)
+				.verifyComplete();
+	}
+
+	@Test
+	@EnabledOnCommand("DELEX")
+	void compareAndDeleteWithCompareOperatorWithValueEqualForIfNotEqual() {
+
+		K key = keyFactory.instance();
+		V value = valueFactory.instance();
+
+		valueOperations.set(key, value)
+				.as(StepVerifier::create)
+				.expectNext(true)
+				.verifyComplete();
+
+		valueOperations.compareAndDelete(key, CompareOperator.ifNotEqual(value))
+				.as(StepVerifier::create)
+				.expectNext(false)
+				.verifyComplete();
+	}
+
+	@Test
+	@EnabledOnCommand("DELEX")
+	void compareAndDeleteWithCompareOperatorWithValueNotEqualForIfNotEqual() {
+
+		K key = keyFactory.instance();
+		V value = valueFactory.instance();
+		V otherValue = valueFactory.instance();
+
+		valueOperations.set(key, value)
+				.as(StepVerifier::create)
+				.expectNext(true)
+				.verifyComplete();
+
+		valueOperations.compareAndDelete(key, CompareOperator.ifNotEqual(otherValue))
+				.as(StepVerifier::create)
+				.expectNext(true)
+				.verifyComplete();
+	}
+
+	@Test
+	@EnabledOnCommand("DELEX")
+	void compareAndDeleteWithCompareOperatorWithValueNotEqualForNonExistingKey() {
+
+		K key = keyFactory.instance();
+		V otherValue = valueFactory.instance();
+
+		valueOperations.compareAndDelete(key, CompareOperator.ifNotEqual(otherValue))
+				.as(StepVerifier::create)
+				.expectNext(false)
+				.verifyComplete();
 	}
 
 	@Test // DATAREDIS-602

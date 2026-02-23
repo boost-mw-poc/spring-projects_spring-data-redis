@@ -75,6 +75,7 @@ import org.springframework.util.CollectionUtils;
  * @author Shyngys Sapraliyev
  * @author Jeonggyu Choi
  * @author Mingi Lee
+ * @author Yordan Tsintsov
  * @see RedisCallback
  * @see RedisSerializer
  * @see StringRedisTemplate
@@ -583,6 +584,19 @@ public interface StringRedisConnection extends RedisConnection {
 	 * @see RedisStringCommands#mSetNX(Map)
 	 */
 	Boolean mSetNXString(@NonNull Map<@NonNull String, String> tuple);
+
+	/**
+	 * Delete a key based on the provided {@link DeleteOption} and {@literal value}.
+	 *
+	 * @param key must not be {@literal null}.
+	 * @param option must not be {@literal null}.
+	 * @param value must not be {@literal null}.
+	 * @return {@literal null} when used in pipeline / transaction.
+	 * @see <a href="https://redis.io/commands/delex">Redis Documentation: DELEX</a>
+	 * @since 4.2
+	 * @see RedisStringCommands#delex(byte[], byte[], DeleteOption)
+	 */
+	Boolean delex(@NonNull String key, @NonNull String value, @NonNull DeleteOption option);
 
 	/**
 	 * Increment an integer value stored as string value of {@code key} by 1.

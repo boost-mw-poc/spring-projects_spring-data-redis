@@ -2056,4 +2056,10 @@ public interface DefaultedRedisConnection extends RedisCommands, RedisCommandsPr
 		return zSetCommands().zRangeStoreRevByScore(dstKey, srcKey, range, limit);
 	}
 
+	/** @deprecated in favor of {@link RedisConnection#stringCommands()}}. */
+	@Override
+	default Boolean delex(byte @NonNull [] key, byte @NonNull [] value, @NonNull DeleteOption option) {
+		return stringCommands().delex(key, value, option);
+	}
+
 }
