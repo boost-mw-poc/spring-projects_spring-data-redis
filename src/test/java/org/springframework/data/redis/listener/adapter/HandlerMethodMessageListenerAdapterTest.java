@@ -1,5 +1,5 @@
 /*
- * Copyright 2026-present the original author or authors.
+ * Copyright 202-present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,35 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.data.redis.annotation;
+package org.springframework.data.redis.listener.adapter;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.listener.adapter.MessagingMessageListenerAdapter;
+
+import org.springframework.data.redis.connection.DefaultMessage;
 import org.springframework.messaging.converter.StringMessageConverter;
 import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
 import org.springframework.messaging.handler.invocation.InvocableHandlerMethod;
 
 /**
- * Unit tests for {@link MessagingMessageListenerAdapter}
+ * Unit tests for {@link HandlerMethodMessageListenerAdapter}
  *
  * @author Ilyass Bougati
  */
 @ExtendWith(MockitoExtension.class)
-public class MessagingMessageListenerAdapterTest {
-	@Mock private Message message;
+class HandlerMethodMessageListenerAdapterTest {
 
-	@Test
+	@Test // GH-1004
 	void shouldConvertBytesToStringAndInvokeMethod() throws NoSuchMethodException {
+
 		DefaultMessageHandlerMethodFactory factory = new DefaultMessageHandlerMethodFactory();
 		StringMessageConverter stringConverter = new StringMessageConverter();
 		factory.setMessageConverter(stringConverter);
@@ -52,18 +50,16 @@ public class MessagingMessageListenerAdapterTest {
 		Method method = TestDelegate.class.getMethod("handleString", String.class);
 
 		InvocableHandlerMethod invocableMethod = factory.createInvocableHandlerMethod(delegate, method);
-		MessagingMessageListenerAdapter adapter = new MessagingMessageListenerAdapter(invocableMethod);
+		HandlerMethodMessageListenerAdapter adapter = new HandlerMethodMessageListenerAdapter(invocableMethod);
 
-		byte[] payload = "Hello World".getBytes(StandardCharsets.UTF_8);
-		when(message.getBody()).thenReturn(payload);
-
-		adapter.onMessage(message, null);
+		adapter.onMessage(new StringMessage("channel", "Hello World"), null);
 
 		assertThat(delegate.capturedPayload).isEqualTo("Hello World");
 	}
 
 	@Test // GH-1004
 	void shouldPassRawBytes_WhenArgumentIsByteArray() throws NoSuchMethodException {
+
 		DefaultMessageHandlerMethodFactory factory = new DefaultMessageHandlerMethodFactory();
 		factory.afterPropertiesSet();
 
@@ -71,12 +67,11 @@ public class MessagingMessageListenerAdapterTest {
 		Method method = TestDelegate.class.getMethod("handleBytes", byte[].class);
 
 		InvocableHandlerMethod invocableMethod = factory.createInvocableHandlerMethod(delegate, method);
-		MessagingMessageListenerAdapter adapter = new MessagingMessageListenerAdapter(invocableMethod);
+		HandlerMethodMessageListenerAdapter adapter = new HandlerMethodMessageListenerAdapter(invocableMethod);
 
 		byte[] payload = { 1, 2, 3 };
-		when(message.getBody()).thenReturn(payload);
 
-		adapter.onMessage(message, null);
+		adapter.onMessage(new DefaultMessage("channel".getBytes(), payload), null);
 
 		assertThat(delegate.capturedBytes).isEqualTo(payload);
 	}
@@ -91,6 +86,13 @@ public class MessagingMessageListenerAdapterTest {
 
 		public void handleBytes(byte[] payload) {
 			this.capturedBytes = payload;
+		}
+	}
+
+	static class StringMessage extends DefaultMessage {
+
+		public StringMessage(String channel, String body) {
+			super(channel.getBytes(StandardCharsets.UTF_8), body.getBytes(StandardCharsets.UTF_8));
 		}
 	}
 }
