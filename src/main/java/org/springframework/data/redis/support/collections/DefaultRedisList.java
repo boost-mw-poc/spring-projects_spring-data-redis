@@ -15,6 +15,7 @@
  */
 package org.springframework.data.redis.support.collections;
 
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
@@ -119,6 +120,20 @@ public class DefaultRedisList<E> extends AbstractRedisCollection<E> implements R
 	}
 
 	@Override
+	public E moveFirstTo(RedisList<E> destination, RedisListCommands.Direction destinationPosition, Duration timeout) {
+
+		Assert.notNull(destination, "Destination must not be null");
+		Assert.notNull(destinationPosition, "Destination position must not be null");
+		Assert.notNull(timeout, "Timeout must not be null");
+		Assert.isTrue(!timeout.isNegative(), "Timeout must not be negative");
+
+		E result = listOps.move(RedisListCommands.Direction.first(), destination.getKey(), destinationPosition, timeout);
+		potentiallyCap(destination);
+		return result;
+	}
+
+	@Override
+	@Deprecated
 	public E moveFirstTo(RedisList<E> destination, RedisListCommands.Direction destinationPosition, long timeout,
 			TimeUnit unit) {
 
@@ -144,6 +159,20 @@ public class DefaultRedisList<E> extends AbstractRedisCollection<E> implements R
 	}
 
 	@Override
+	public E moveLastTo(RedisList<E> destination, RedisListCommands.Direction destinationPosition, Duration timeout) {
+
+		Assert.notNull(destination, "Destination must not be null");
+		Assert.notNull(destinationPosition, "Destination position must not be null");
+		Assert.notNull(timeout, "Timeout must not be null");
+		Assert.isTrue(!timeout.isNegative(), "Timeout must not be negative");
+
+		E result = listOps.move(RedisListCommands.Direction.last(), destination.getKey(), destinationPosition, timeout);
+		potentiallyCap(destination);
+		return result;
+	}
+
+	@Override
+	@Deprecated
 	public E moveLastTo(RedisList<E> destination, RedisListCommands.Direction destinationPosition, long timeout,
 			TimeUnit unit) {
 

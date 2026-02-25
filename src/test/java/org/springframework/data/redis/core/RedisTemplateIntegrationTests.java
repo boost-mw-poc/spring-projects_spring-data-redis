@@ -110,6 +110,18 @@ public class RedisTemplateIntegrationTests<K, V> {
 	}
 
 	@Test
+	void testDumpAndRestorePersistent() {
+		K key1 = keyFactory.instance();
+		V value1 = valueFactory.instance();
+		redisTemplate.boundValueOps(key1).set(value1);
+		byte[] serializedValue = redisTemplate.dump(key1);
+		assertThat(serializedValue).isNotNull();
+		redisTemplate.delete(key1);
+		redisTemplate.restore(key1, serializedValue, Expiration.persistent());
+		assertThat(redisTemplate.boundValueOps(key1).get()).isEqualTo(value1);
+	}
+
+	@Test
 	void testRestoreTtl() {
 		K key1 = keyFactory.instance();
 		V value1 = valueFactory.instance();
@@ -118,6 +130,19 @@ public class RedisTemplateIntegrationTests<K, V> {
 		assertThat(serializedValue).isNotNull();
 		redisTemplate.delete(key1);
 		redisTemplate.restore(key1, serializedValue, 10000, TimeUnit.MILLISECONDS);
+		assertThat(redisTemplate.boundValueOps(key1).get()).isEqualTo(value1);
+		assertThat(redisTemplate.getExpire(key1)).isGreaterThan(1L);
+	}
+
+	@Test
+	void testRestoreExpiration() {
+		K key1 = keyFactory.instance();
+		V value1 = valueFactory.instance();
+		redisTemplate.boundValueOps(key1).set(value1);
+		byte[] serializedValue = redisTemplate.dump(key1);
+		assertThat(serializedValue).isNotNull();
+		redisTemplate.delete(key1);
+		redisTemplate.restore(key1, serializedValue, Expiration.seconds(120));
 		assertThat(redisTemplate.boundValueOps(key1).get()).isEqualTo(value1);
 		assertThat(redisTemplate.getExpire(key1)).isGreaterThan(1L);
 	}

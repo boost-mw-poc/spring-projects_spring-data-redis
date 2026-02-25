@@ -380,6 +380,7 @@ public class RedisAtomicLong extends Number implements Serializable, BoundKeyOpe
 	}
 
 	@Override
+	@Deprecated
 	public Boolean expire(long timeout, TimeUnit unit) {
 		return generalOps.expire(key, timeout, unit);
 	}

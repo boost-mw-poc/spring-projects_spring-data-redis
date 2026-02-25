@@ -321,7 +321,7 @@ public interface RedisOperations<K, V> {
 	 * @param key must not be {@literal null}.
 	 * @param expiration must not be {@literal null}.
 	 * @return changes to the expiry. {@literal null} when used in pipeline / transaction.
-	 * @since 4.2
+	 * @since 4.1
 	 */
 	Boolean expire(@NonNull K key, @NonNull Expiration expiration);
 
@@ -332,9 +332,9 @@ public interface RedisOperations<K, V> {
 	 * @param timeout
 	 * @param unit must not be {@literal null}.
 	 * @return {@literal null} when used in pipeline / transaction.
-	 * @deprecated in favor of {@link #expire(Object, Expiration)}
+	 * @deprecated since 4.1 in favor of {@link #expire(Object, Expiration)}.
 	 */
-	@Deprecated(since = "4.2", forRemoval = true)
+	@Deprecated(since = "4.1")
 	Boolean expire(@NonNull K key, long timeout, @NonNull TimeUnit unit);
 
 	/**
@@ -458,13 +458,40 @@ public interface RedisOperations<K, V> {
 	 *
 	 * @param key must not be {@literal null}.
 	 * @param value must not be {@literal null}.
+	 * @param expiration must not be {@literal null}.
+	 * @since 4.1
+	 * @see <a href="https://redis.io/commands/restore">Redis Documentation: RESTORE</a>
+	 */
+	default void restore(@NonNull K key, byte @NonNull [] value, @NonNull Expiration expiration) {
+		restore(key, value, expiration, false);
+	}
+
+	/**
+	 * Create {@code key} using the {@code serializedValue}, previously obtained using {@link #dump(Object)}.
+	 *
+	 * @param key must not be {@literal null}.
+	 * @param value must not be {@literal null}.
 	 * @param timeToLive
 	 * @param unit must not be {@literal null}.
 	 * @see <a href="https://redis.io/commands/restore">Redis Documentation: RESTORE</a>
+	 * @deprecated since 4.1 in favor of {@link #restore(Object, byte[], Expiration)}
 	 */
+	@Deprecated(since = "4.1")
 	default void restore(@NonNull K key, byte @NonNull [] value, long timeToLive, @NonNull TimeUnit unit) {
 		restore(key, value, timeToLive, unit, false);
 	}
+
+	/**
+	 * Create {@code key} using the {@code serializedValue}, previously obtained using {@link #dump(Object)}.
+	 *
+	 * @param key must not be {@literal null}.
+	 * @param value must not be {@literal null}.
+	 * @param expiration must not be {@literal null}.
+	 * @param replace use {@literal true} to replace a potentially existing value instead of erroring.
+	 * @since 4.1
+	 * @see <a href="https://redis.io/commands/restore">Redis Documentation: RESTORE</a>
+	 */
+	void restore(@NonNull K key, byte @NonNull [] value, @NonNull Expiration expiration, boolean replace);
 
 	/**
 	 * Create {@code key} using the {@code serializedValue}, previously obtained using {@link #dump(Object)}.
@@ -476,7 +503,9 @@ public interface RedisOperations<K, V> {
 	 * @param replace use {@literal true} to replace a potentially existing value instead of erroring.
 	 * @since 2.1
 	 * @see <a href="https://redis.io/commands/restore">Redis Documentation: RESTORE</a>
+	 * @deprecated since 4.1 in favor of {@link #restore(Object, byte[], Expiration, boolean)}.
 	 */
+	@Deprecated(since = "4.1")
 	void restore(@NonNull K key, byte @NonNull [] value, long timeToLive, @NonNull TimeUnit unit, boolean replace);
 
 	/**

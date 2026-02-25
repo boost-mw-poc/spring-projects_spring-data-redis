@@ -209,6 +209,12 @@ class BoundOperationsProxyFactory {
 		}
 
 		@Override
+		public Boolean expire(Expiration expiration) {
+			return ops.expire(key, expiration);
+		}
+
+		@Override
+		@Deprecated
 		public Boolean expire(long timeout, TimeUnit unit) {
 			return ops.expire(key, timeout, unit);
 		}
@@ -221,11 +227,6 @@ class BoundOperationsProxyFactory {
 		@Override
 		public Long getExpire() {
 			return ops.getExpire(key);
-		}
-
-		@Override
-		public Boolean expire(Expiration expiration) {
-			return ops.expire(key, expiration);
 		}
 
 		@Override

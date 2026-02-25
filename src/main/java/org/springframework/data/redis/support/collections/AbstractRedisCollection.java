@@ -104,13 +104,14 @@ public abstract class AbstractRedisCollection<E> extends AbstractCollection<E> i
 	}
 
 	@Override
-	public Boolean expire(long timeout, TimeUnit unit) {
-		return operations.expire(key, timeout, unit);
+	public Boolean expire(@NonNull Expiration expiration) {
+		return operations.expire(key, expiration);
 	}
 
 	@Override
-	public Boolean expire(@NonNull Expiration expiration) {
-		return operations.expire(key, expiration);
+	@Deprecated
+	public Boolean expire(long timeout, TimeUnit unit) {
+		return operations.expire(key, timeout, unit);
 	}
 
 	@Override

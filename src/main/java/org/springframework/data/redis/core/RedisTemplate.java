@@ -696,8 +696,8 @@ public class RedisTemplate<K, V> extends RedisAccessor implements RedisOperation
 	}
 
 	@Override
-	@Deprecated(since = "4.2", forRemoval = true)
-	public Boolean expire(K key, final long timeout, final TimeUnit unit) {
+	@Deprecated(since = "4.1")
+	public Boolean expire(K key, long timeout, TimeUnit unit) {
 
 		byte[] rawKey = rawKey(key);
 		long rawTimeout = TimeoutUtils.toMillis(timeout, unit);
@@ -705,7 +705,7 @@ public class RedisTemplate<K, V> extends RedisAccessor implements RedisOperation
 	}
 
 	@Override
-	public Boolean expireAt(K key, final Date date) {
+	public Boolean expireAt(K key, Date date) {
 
 		byte[] rawKey = rawKey(key);
 		return doWithKeys(connection -> connection.pExpireAt(rawKey, date.getTime()));
@@ -767,15 +767,40 @@ public class RedisTemplate<K, V> extends RedisAccessor implements RedisOperation
 	 * Executes the Redis restore command. The value passed in should be the exact serialized data returned from
 	 * {@link #dump(Object)}, since Redis uses a non-standard serialization mechanism.
 	 *
-	 * @param key The key to restore
-	 * @param value The value to restore, as returned by {@link #dump(Object)}
-	 * @param timeToLive An expiration for the restored key, or 0 for no expiration
-	 * @param unit The time unit for timeToLive
+	 * @param key key to restore.
+	 * @param value value to restore, as returned by {@link #dump(Object)}.
+	 * @param expiration expiration for the restored key, can be {@literal Expiration.persistent()} for no expiration.
+	 * @param replace use {@literal true} to replace a potentially existing value instead of erroring.
+	 * @throws RedisSystemException if the key you are attempting to restore already exists and {@code replace} is set to
+	 *           {@literal false}.
+	 * @since 4.1
+	 */
+	@Override
+	public void restore(K key, byte[] value, Expiration expiration, boolean replace) {
+
+		byte[] rawKey = rawKey(key);
+		long rawTimeout = expiration.isPersistent() ? 0 : expiration.getExpirationTimeInMilliseconds();
+
+		doWithKeys(connection -> {
+			connection.restore(rawKey, rawTimeout, value, replace);
+			return null;
+		});
+	}
+
+	/**
+	 * Executes the Redis restore command. The value passed in should be the exact serialized data returned from
+	 * {@link #dump(Object)}, since Redis uses a non-standard serialization mechanism.
+	 *
+	 * @param key key to restore.
+	 * @param value value to restore, as returned by {@link #dump(Object)}.
+	 * @param timeToLive expiration for the restored key, or {@value 0} for no expiration.
+	 * @param unit time unit for {@code timeToLive}.
 	 * @param replace use {@literal true} to replace a potentially existing value instead of erroring.
 	 * @throws RedisSystemException if the key you are attempting to restore already exists and {@code replace} is set to
 	 *           {@literal false}.
 	 */
 	@Override
+	@Deprecated(since = "4.1")
 	public void restore(K key, byte[] value, long timeToLive, TimeUnit unit, boolean replace) {
 
 		byte[] rawKey = rawKey(key);

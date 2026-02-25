@@ -383,6 +383,7 @@ public class RedisAtomicInteger extends Number implements Serializable, BoundKey
 	}
 
 	@Override
+	@Deprecated
 	public Boolean expire(long timeout, TimeUnit unit) {
 		return generalOps.expire(key, timeout, unit);
 	}

@@ -178,7 +178,9 @@ public interface BoundListOperations<K, V> extends BoundKeyOperations<K> {
 	 * @return {@literal null} when used in pipeline / transaction.
 	 * @since 2.6
 	 * @see <a href="https://redis.io/commands/blmove">Redis Documentation: BLMOVE</a>
+	 * @deprecated since 4.1 in favor of {@link #move(Direction, Object, Direction, Duration)}.
 	 */
+	@Deprecated(since = "4.1")
 	V move(@NonNull Direction from, @NonNull K destinationKey, @NonNull Direction to, long timeout,
 			@NonNull TimeUnit unit);
 
@@ -274,7 +276,9 @@ public interface BoundListOperations<K, V> extends BoundKeyOperations<K> {
 	 * @param unit must not be {@literal null}.
 	 * @return {@literal null} when timeout reached or used in pipeline / transaction.
 	 * @see <a href="https://redis.io/commands/blpop">Redis Documentation: BLPOP</a>
+	 * @deprecated since 4.1 in favor of {@link #leftPop(Duration)}.
 	 */
+	@Deprecated(since = "4.1")
 	V leftPop(long timeout, @NonNull TimeUnit unit);
 
 	/**
@@ -321,7 +325,9 @@ public interface BoundListOperations<K, V> extends BoundKeyOperations<K> {
 	 * @param unit must not be {@literal null}.
 	 * @return {@literal null} when timeout reached or used in pipeline / transaction.
 	 * @see <a href="https://redis.io/commands/brpop">Redis Documentation: BRPOP</a>
+	 * @deprecated since 4.1 in favor of {@link #leftPop(Duration)}.
 	 */
+	@Deprecated(since = "4.1")
 	V rightPop(long timeout, @NonNull TimeUnit unit);
 
 	/**

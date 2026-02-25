@@ -282,6 +282,12 @@ public class DefaultRedisMap<K, V> implements RedisMap<K, V> {
 	}
 
 	@Override
+	public Boolean expire(@NonNull Expiration expiration) {
+		return hashOps.expire(expiration);
+	}
+
+	@Override
+	@Deprecated
 	public Boolean expire(long timeout, TimeUnit unit) {
 		return hashOps.expire(timeout, unit);
 	}
@@ -294,11 +300,6 @@ public class DefaultRedisMap<K, V> implements RedisMap<K, V> {
 	@Override
 	public Long getExpire() {
 		return hashOps.getExpire();
-	}
-
-	@Override
-	public Boolean expire(@NonNull Expiration expiration) {
-		return hashOps.expire(expiration);
 	}
 
 	@Override

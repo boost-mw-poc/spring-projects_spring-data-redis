@@ -20,6 +20,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.core.types.Expiration;
@@ -34,6 +35,7 @@ import org.springframework.util.Assert;
  * @author Costin Leau
  * @author Christoph Strobl
  * @author Mark Paluch
+ * @author Yordan Tsintsov
  */
 public interface BoundKeyOperations<K> {
 
@@ -79,10 +81,7 @@ public interface BoundKeyOperations<K> {
 	 * @throws IllegalArgumentException if the timeout is {@literal null}.
 	 * @since 2.3
 	 */
-	default @Nullable Boolean expire(Duration timeout) {
-
-		Assert.notNull(timeout, "Timeout must not be null");
-
+	default @Nullable Boolean expire(@NonNull Duration timeout) {
 		return expire(Expiration.from(timeout));
 	}
 
@@ -92,9 +91,10 @@ public interface BoundKeyOperations<K> {
 	 * @param expiration must not be {@literal null}.
 	 * @return {@literal true} if expiration was set, {@literal false} otherwise. {@literal null} when used in pipeline /
 	 *         transaction.
-	 * @since 4.2
+	 * @since 4.1
 	 */
-	@Nullable Boolean expire(Expiration expiration);
+	@Nullable
+	Boolean expire(@NonNull Expiration expiration);
 
 	/**
 	 * Sets the key time-to-live/expiration.
@@ -102,9 +102,9 @@ public interface BoundKeyOperations<K> {
 	 * @param timeout expiration value
 	 * @param unit expiration unit
 	 * @return true if expiration was set, false otherwise. {@literal null} when used in pipeline / transaction.
-	 * @deprecated in favor of {@link #expire(Expiration)}
+	 * @deprecated since 4.1 in favor of {@link #expire(Expiration)}
 	 */
-	@Deprecated(since = "4.2", forRemoval = true)
+	@Deprecated(since = "4.1")
 	@Nullable
 	Boolean expire(long timeout, TimeUnit unit);
 

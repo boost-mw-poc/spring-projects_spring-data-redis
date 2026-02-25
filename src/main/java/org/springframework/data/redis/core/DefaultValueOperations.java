@@ -64,7 +64,7 @@ class DefaultValueOperations<K, V> extends AbstractOperations<K, V> implements V
 	}
 
 	@Override
-	@Deprecated(since = "4.2", forRemoval = true)
+	@Deprecated
 	public @Nullable V getAndExpire(K key, long timeout, TimeUnit unit) {
 		return execute(
 				valueCallbackFor(key, (connection, rawKey) -> connection.getEx(rawKey, Expiration.from(timeout, unit))));
@@ -217,7 +217,7 @@ class DefaultValueOperations<K, V> extends AbstractOperations<K, V> implements V
 	}
 
 	@Override
-	@Deprecated(since = "4.1", forRemoval = true)
+	@Deprecated
 	public void set(K key, V value, long timeout, TimeUnit unit) {
 
 		byte[] rawKey = rawKey(key);
@@ -232,7 +232,7 @@ class DefaultValueOperations<K, V> extends AbstractOperations<K, V> implements V
 	}
 
 	@Override
-	@Deprecated(since = "4.1", forRemoval = true)
+	@Deprecated
 	public @Nullable V setGet(K key, V value, long timeout, TimeUnit unit) {
 		return doSetGet(key, value, Expiration.from(timeout, unit));
 	}
@@ -272,7 +272,7 @@ class DefaultValueOperations<K, V> extends AbstractOperations<K, V> implements V
 	}
 
 	@Override
-	@Deprecated(since = "4.1", forRemoval = true)
+	@Deprecated
 	public Boolean setIfAbsent(K key, V value, long timeout, TimeUnit unit) {
 
 		byte[] rawKey = rawKey(key);
@@ -303,7 +303,7 @@ class DefaultValueOperations<K, V> extends AbstractOperations<K, V> implements V
 
 	@Nullable
 	@Override
-	@Deprecated(since = "4.1", forRemoval = true)
+	@Deprecated
 	public Boolean setIfPresent(K key, V value, long timeout, TimeUnit unit) {
 
 		byte[] rawKey = rawKey(key);

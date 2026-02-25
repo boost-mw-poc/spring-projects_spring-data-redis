@@ -28,8 +28,6 @@ import org.jspecify.annotations.Nullable;
 
 import org.springframework.data.redis.core.BoundListOperations;
 import org.springframework.data.redis.core.RedisOperations;
-import org.springframework.data.redis.core.TimeoutUtils;
-import org.springframework.util.Assert;
 
 /**
  * Redis extension for the {@link List} contract. Supports {@link List}, {@link Queue} and {@link Deque} contracts as
@@ -111,15 +109,14 @@ public interface RedisList<E> extends RedisCollection<E>, List<E>, BlockingDeque
 	 *
 	 * @param destination must not be {@literal null}.
 	 * @param destinationPosition must not be {@literal null}.
-	 * @param timeout
-	 * @param unit must not be {@literal null}.
+	 * @param timeout must not be {@literal null} or negative.
 	 * @return
 	 * @since 2.6
 	 * @see Direction#first()
 	 * @see Direction#last()
 	 */
 	@Nullable
-	E moveFirstTo(RedisList<E> destination, Direction destinationPosition, long timeout, TimeUnit unit);
+	E moveFirstTo(RedisList<E> destination, Direction destinationPosition, Duration timeout);
 
 	/**
 	 * Atomically returns and removes the first element of the list stored at the bound key, and pushes the element at the
@@ -130,20 +127,17 @@ public interface RedisList<E> extends RedisCollection<E>, List<E>, BlockingDeque
 	 *
 	 * @param destination must not be {@literal null}.
 	 * @param destinationPosition must not be {@literal null}.
-	 * @param timeout must not be {@literal null} or negative.
+	 * @param timeout
+	 * @param unit must not be {@literal null}.
 	 * @return
 	 * @since 2.6
 	 * @see Direction#first()
 	 * @see Direction#last()
+	 * @deprecated since 4.1 in favor of {@link #moveFirstTo(RedisList, Direction, Duration)}.
 	 */
-	default @Nullable E moveFirstTo(RedisList<E> destination, Direction destinationPosition, Duration timeout) {
-
-		Assert.notNull(timeout, "Timeout must not be null");
-		Assert.isTrue(!timeout.isNegative(), "Timeout must not be negative");
-
-		return moveFirstTo(destination, destinationPosition,
-				TimeoutUtils.toMillis(timeout.toMillis(), TimeUnit.MILLISECONDS), TimeUnit.MILLISECONDS);
-	}
+	@Nullable
+	@Deprecated(since = "4.1")
+	E moveFirstTo(RedisList<E> destination, Direction destinationPosition, long timeout, TimeUnit unit);
 
 	/**
 	 * Atomically returns and removes the last element of the list stored at the bound key, and pushes the element at the
@@ -169,15 +163,14 @@ public interface RedisList<E> extends RedisCollection<E>, List<E>, BlockingDeque
 	 *
 	 * @param destination must not be {@literal null}.
 	 * @param destinationPosition must not be {@literal null}.
-	 * @param timeout
-	 * @param unit must not be {@literal null}.
+	 * @param timeout must not be {@literal null} or negative.
 	 * @return
 	 * @since 2.6
 	 * @see Direction#first()
 	 * @see Direction#last()
 	 */
 	@Nullable
-	E moveLastTo(RedisList<E> destination, Direction destinationPosition, long timeout, TimeUnit unit);
+	E moveLastTo(RedisList<E> destination, Direction destinationPosition, Duration timeout);
 
 	/**
 	 * Atomically returns and removes the last element of the list stored at the bound key, and pushes the element at the
@@ -188,20 +181,17 @@ public interface RedisList<E> extends RedisCollection<E>, List<E>, BlockingDeque
 	 *
 	 * @param destination must not be {@literal null}.
 	 * @param destinationPosition must not be {@literal null}.
-	 * @param timeout must not be {@literal null} or negative.
+	 * @param timeout
+	 * @param unit must not be {@literal null}.
 	 * @return
 	 * @since 2.6
 	 * @see Direction#first()
 	 * @see Direction#last()
+	 * @deprecated since 4.1 in favor of {@link #moveLastTo(RedisList, Direction, Duration)}.
 	 */
-	default @Nullable E moveLastTo(RedisList<E> destination, Direction destinationPosition, Duration timeout) {
-
-		Assert.notNull(timeout, "Timeout must not be null");
-		Assert.isTrue(!timeout.isNegative(), "Timeout must not be negative");
-
-		return moveLastTo(destination, destinationPosition,
-				TimeoutUtils.toMillis(timeout.toMillis(), TimeUnit.MILLISECONDS), TimeUnit.MILLISECONDS);
-	}
+	@Nullable
+	@Deprecated
+	E moveLastTo(RedisList<E> destination, Direction destinationPosition, long timeout, TimeUnit unit);
 
 	/**
 	 * Get elements between {@code start} and {@code end} from list at the bound key.

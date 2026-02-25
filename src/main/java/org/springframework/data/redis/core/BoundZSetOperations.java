@@ -313,7 +313,9 @@ public interface BoundZSetOperations<K, V> extends BoundKeyOperations<K> {
 	 * @return can be {@literal null}.
 	 * @see <a href="https://redis.io/commands/bzpopmin">Redis Documentation: BZPOPMIN</a>
 	 * @since 2.6
+	 * @deprecated since 4.1 in favor of {@link #popMin(Duration)}.
 	 */
+	@Deprecated(since = "4.1")
 	TypedTuple<V> popMin(long timeout, @NonNull TimeUnit unit);
 
 	/**
@@ -362,7 +364,9 @@ public interface BoundZSetOperations<K, V> extends BoundKeyOperations<K> {
 	 * @return can be {@literal null}.
 	 * @see <a href="https://redis.io/commands/bzpopmax">Redis Documentation: BZPOPMAX</a>
 	 * @since 2.6
+	 * @deprecated since 4.1 in favor of {@link #popMax(Duration)}.
 	 */
+	@Deprecated(since = "4.1")
 	TypedTuple<V> popMax(long timeout, @NonNull TimeUnit unit);
 
 	/**

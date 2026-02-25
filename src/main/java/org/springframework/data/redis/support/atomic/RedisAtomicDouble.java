@@ -383,7 +383,7 @@ public class RedisAtomicDouble extends Number implements Serializable, BoundKeyO
 	}
 
 	@Override
-	@Deprecated(since = "4.2", forRemoval = true)
+	@Deprecated(since = "4.1")
 	public Boolean expire(long timeout, TimeUnit unit) {
 		return generalOps.expire(key, timeout, unit);
 	}

@@ -15,6 +15,7 @@
  */
 package org.springframework.data.redis.support.collections;
 
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -78,6 +79,7 @@ class ReversedRedisListView<E> implements RedisList<E> {
 	}
 
 	@Nullable
+	@Deprecated
 	@Override
 	public Boolean expire(long timeout, TimeUnit unit) {
 		return this.base.expire(timeout, unit);
@@ -103,6 +105,13 @@ class ReversedRedisListView<E> implements RedisList<E> {
 
 	@Nullable
 	@Override
+	public E moveFirstTo(RedisList<E> destination, Direction destinationPosition, Duration timeout) {
+		return base.moveLastTo(destination, destinationPosition, timeout);
+	}
+
+	@Nullable
+	@Deprecated
+	@Override
 	public E moveFirstTo(RedisList<E> destination, Direction destinationPosition, long timeout, TimeUnit unit) {
 		return base.moveLastTo(destination, destinationPosition, timeout, unit);
 	}
@@ -114,6 +123,13 @@ class ReversedRedisListView<E> implements RedisList<E> {
 	}
 
 	@Nullable
+	@Override
+	public E moveLastTo(RedisList<E> destination, Direction destinationPosition, Duration timeout) {
+		return base.moveFirstTo(destination, destinationPosition, timeout);
+	}
+
+	@Nullable
+	@Deprecated
 	@Override
 	public E moveLastTo(RedisList<E> destination, Direction destinationPosition, long timeout, TimeUnit unit) {
 		return base.moveFirstTo(destination, destinationPosition, timeout, unit);

@@ -78,9 +78,9 @@ public interface ValueOperations<K, V> {
 	 * @return {@literal null} when used in pipeline / transaction.
 	 * @see <a href="https://redis.io/commands/set">Redis Documentation: SET</a>
 	 * @since 3.5
-	 * @deprecated in favor of {@link #setGet(Object, Object, Expiration)}
+	 * @deprecated since 4.1 in favor of {@link #setGet(Object, Object, Expiration)}.
 	 */
-	@Deprecated(since = "4.1", forRemoval = true)
+	@Deprecated(since = "4.1")
 	@Nullable
 	V setGet(@NonNull K key, @NonNull V value, long timeout, @NonNull TimeUnit unit);
 
@@ -118,9 +118,9 @@ public interface ValueOperations<K, V> {
 	 * @param timeout the key expiration timeout.
 	 * @param unit must not be {@literal null}.
 	 * @see <a href="https://redis.io/commands/set">Redis Documentation: SET</a>
-	 * @deprecated in favor of {@link #set(Object, Object, Expiration)}
+	 * @deprecated since 4.1 in favor of {@link #set(Object, Object, Expiration)}
 	 */
-	@Deprecated(since = "4.1", forRemoval = true)
+	@Deprecated(since = "4.1")
 	void set(@NonNull K key, @NonNull V value, long timeout, @NonNull TimeUnit unit);
 
 	/**
@@ -172,9 +172,9 @@ public interface ValueOperations<K, V> {
 	 * @return {@literal null} when used in pipeline / transaction.
 	 * @since 2.1
 	 * @see <a href="https://redis.io/commands/set">Redis Documentation: SET</a>
-	 * @deprecated in favor of {@link #setIfAbsent(Object, Object, Expiration)}
+	 * @deprecated since 4.1 in favor of {@link #setIfAbsent(Object, Object, Expiration)}.
 	 */
-	@Deprecated(since = "4.1", forRemoval = true)
+	@Deprecated(since = "4.1")
 	Boolean setIfAbsent(@NonNull K key, @NonNull V value, long timeout, @NonNull TimeUnit unit);
 
 	/**
@@ -230,9 +230,9 @@ public interface ValueOperations<K, V> {
 	 * @throws IllegalArgumentException if either {@code key}, {@code value} or {@code timeout} is not present.
 	 * @see <a href="https://redis.io/commands/set">Redis Documentation: SET</a>
 	 * @since 2.1
-	 * @deprecated in favor of {@link #setIfPresent(Object, Object, Expiration)}
+	 * @deprecated since 4.1 in favor of {@link #setIfPresent(Object, Object, Expiration)}.
 	 */
-	@Deprecated(since = "4.1", forRemoval = true)
+	@Deprecated(since = "4.1")
 	Boolean setIfPresent(@NonNull K key, @NonNull V value, long timeout, @NonNull TimeUnit unit);
 
 	/**
@@ -299,7 +299,7 @@ public interface ValueOperations<K, V> {
 	 * @param expiration must not be {@literal null}.
 	 * @return {@literal null} when key does not exist or used in pipeline / transaction.
 	 * @see <a href="https://redis.io/commands/getex">Redis Documentation: GETEX</a>
-	 * @since 4.2
+	 * @since 4.1
 	 */
 	V getAndExpire(@NonNull K key, @NonNull Expiration expiration);
 
@@ -312,10 +312,10 @@ public interface ValueOperations<K, V> {
 	 * @return {@literal null} when key does not exist or used in pipeline / transaction.
 	 * @see <a href="https://redis.io/commands/getex">Redis Documentation: GETEX</a>
 	 * @since 2.6
-	 * @deprecated in favor of {@link #getAndExpire(Object, Expiration)}
+	 * @deprecated since 4.1 in favor of {@link #getAndExpire(Object, Expiration)}.
 	 */
+	@Deprecated(since = "4.1")
 	@Nullable
-	@Deprecated(since = "4.2", forRemoval = true)
 	V getAndExpire(@NonNull K key, long timeout, @NonNull TimeUnit unit);
 
 	/**

@@ -334,7 +334,9 @@ public interface ListOperations<K, V> {
 	 * @return {@literal null} when used in pipeline / transaction.
 	 * @since 2.6
 	 * @see <a href="https://redis.io/commands/blmove">Redis Documentation: BLMOVE</a>
+	 * @deprecated since 4.1 in favor of {@link #move(Object, Direction, Object, Direction, Duration)}.
 	 */
+	@Deprecated(since = "4.1")
 	V move(@NonNull K sourceKey, @NonNull Direction from, @NonNull K destinationKey, @NonNull Direction to, long timeout,
 			@NonNull TimeUnit unit);
 
@@ -444,7 +446,9 @@ public interface ListOperations<K, V> {
 	 * @param unit must not be {@literal null}.
 	 * @return can be {@literal null}.
 	 * @see <a href="https://redis.io/commands/blpop">Redis Documentation: BLPOP</a>
+	 * @deprecated since 4.1 in favor of {@link #leftPop(Object, Duration)}.
 	 */
+	@Deprecated(since = "4.1")
 	V leftPop(@NonNull K key, long timeout, @NonNull TimeUnit unit);
 
 	/**
@@ -495,7 +499,9 @@ public interface ListOperations<K, V> {
 	 * @param unit must not be {@literal null}.
 	 * @return can be {@literal null}.
 	 * @see <a href="https://redis.io/commands/brpop">Redis Documentation: BRPOP</a>
+	 * @deprecated since 4.1 in favor of {@link #rightPop(Object, Duration)}.
 	 */
+	@Deprecated(since = "4.1")
 	V rightPop(@NonNull K key, long timeout, @NonNull TimeUnit unit);
 
 	/**
@@ -537,7 +543,9 @@ public interface ListOperations<K, V> {
 	 * @param unit must not be {@literal null}.
 	 * @return can be {@literal null}.
 	 * @see <a href="https://redis.io/commands/brpoplpush">Redis Documentation: BRPOPLPUSH</a>
+	 * @deprecated since 4.1 in favor of {@link #rightPopAndLeftPush(Object, Object, Duration)}.
 	 */
+	@Deprecated(since = "4.1")
 	V rightPopAndLeftPush(@NonNull K sourceKey, @NonNull K destinationKey, long timeout, @NonNull TimeUnit unit);
 
 	/**

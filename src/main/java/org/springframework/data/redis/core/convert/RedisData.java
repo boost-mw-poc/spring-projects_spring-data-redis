@@ -15,6 +15,7 @@
  */
 package org.springframework.data.redis.core.convert;
 
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -159,10 +160,23 @@ public class RedisData {
 	 */
 	public void setTimeToLive(Long timeToLive, TimeUnit timeUnit) {
 
-		Assert.notNull(timeToLive, "TimeToLive must not be null when used with TimeUnit");
+		Assert.notNull(timeToLive, "TTL must not be null when used with TimeUnit");
 		Assert.notNull(timeToLive, "TimeUnit must not be null");
 
 		setTimeToLive(TimeUnit.SECONDS.convert(timeToLive, timeUnit));
+	}
+
+	/**
+	 * Set the time before expiration converting the given arguments to {@link TimeUnit#SECONDS}.
+	 *
+	 * @param timeToLive must not be {@literal null}
+	 * @since 4.1
+	 */
+	public void setTimeToLive(Duration timeToLive) {
+
+		Assert.notNull(timeToLive, "TTL must not be null");
+
+		setTimeToLive(timeToLive.toSeconds());
 	}
 
 	@Override

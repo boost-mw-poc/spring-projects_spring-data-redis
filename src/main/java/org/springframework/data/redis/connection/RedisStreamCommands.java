@@ -22,10 +22,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.NullUnmarked;
 import org.jspecify.annotations.Nullable;
+
 import org.springframework.data.domain.Range;
 import org.springframework.data.redis.connection.stream.*;
 import org.springframework.data.redis.connection.stream.StreamInfo.XInfoConsumers;
@@ -457,7 +459,7 @@ public interface RedisStreamCommands {
 		 * Prefer {@code XAddOptions.trim(TrimOptions.maxLen(n).approximate())} or
 		 * {@code XAddOptions.trim(TrimOptions.minId(id).exact())}.
 		 */
-		@Deprecated(since = "4.0", forRemoval = false)
+		@Deprecated(since = "4.0")
 		public XAddOptions approximateTrimming(boolean approximateTrimming) {
 			TrimOptions trimOptions = this.trimOptions != null ? this.trimOptions : TrimOptions.maxLen(0);
 			if (approximateTrimming) {

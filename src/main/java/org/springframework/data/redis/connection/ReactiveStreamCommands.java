@@ -34,6 +34,7 @@ import org.springframework.data.redis.connection.ReactiveRedisConnection.Command
 import org.springframework.data.redis.connection.ReactiveRedisConnection.KeyCommand;
 import org.springframework.data.redis.connection.ReactiveRedisConnection.NumericResponse;
 import org.springframework.data.redis.connection.RedisStreamCommands.MaxLenTrimStrategy;
+import org.springframework.data.redis.connection.RedisStreamCommands.StreamEntryDeletionResult;
 import org.springframework.data.redis.connection.RedisStreamCommands.TrimOperator;
 import org.springframework.data.redis.connection.RedisStreamCommands.TrimOptions;
 import org.springframework.data.redis.connection.RedisStreamCommands.TrimStrategy;
@@ -42,7 +43,6 @@ import org.springframework.data.redis.connection.RedisStreamCommands.XClaimOptio
 import org.springframework.data.redis.connection.RedisStreamCommands.XDelOptions;
 import org.springframework.data.redis.connection.RedisStreamCommands.XPendingOptions;
 import org.springframework.data.redis.connection.RedisStreamCommands.XTrimOptions;
-import org.springframework.data.redis.connection.RedisStreamCommands.StreamEntryDeletionResult;
 import org.springframework.data.redis.connection.stream.ByteBufferRecord;
 import org.springframework.data.redis.connection.stream.Consumer;
 import org.springframework.data.redis.connection.stream.PendingMessage;
@@ -1902,7 +1902,7 @@ public interface ReactiveStreamCommands {
 		 * @since 4.0
 		 * @deprecated since 4.0, prefer {@link #stream(ByteBuffer, XTrimOptions)} instead.
 		 */
-		@Deprecated(since = "4.0", forRemoval = false)
+		@Deprecated(since = "4.0")
 		public static TrimCommand stream(ByteBuffer key) {
 
 			Assert.notNull(key, "Key must not be null");
@@ -1933,7 +1933,7 @@ public interface ReactiveStreamCommands {
 		 * {@code options(XTrimOptions.trim(TrimOptions.maxLen(threshold)))} or construct with
 		 * {@code stream(key, XTrimOptions.trim(TrimOptions.maxLen(threshold)))}.
 		 */
-		@Deprecated(since = "4.0", forRemoval = false)
+		@Deprecated(since = "4.0")
 		public TrimCommand to(long threshold) {
 			return new TrimCommand(getKey(), XTrimOptions.trim(TrimOptions.maxLen(threshold)));
 		}
@@ -1947,7 +1947,7 @@ public interface ReactiveStreamCommands {
 		 * strategy (MAXLEN or MINID) and operator via {@link XTrimOptions} and {@link TrimOptions}, e.g.
 		 * {@code options(XTrimOptions.trim(TrimOptions.maxLen(n).approximate()))}.
 		 */
-		@Deprecated(since = "4.0", forRemoval = false)
+		@Deprecated(since = "4.0")
 		public TrimCommand approximate() {
 			return approximate(true);
 		}
@@ -1963,7 +1963,7 @@ public interface ReactiveStreamCommands {
 		 * {@code options(XTrimOptions.trim(TrimOptions.maxLen(n).approximate()))} or
 		 * {@code options(XTrimOptions.trim(TrimOptions.minId(id).exact()))}.
 		 */
-		@Deprecated(since = "4.0", forRemoval = false)
+		@Deprecated(since = "4.0")
 		public TrimCommand approximate(boolean approximateTrimming) {
 			if (approximateTrimming) {
 				return new TrimCommand(getKey(), XTrimOptions.trim(options.getTrimOptions().approximate()));
@@ -1995,7 +1995,7 @@ public interface ReactiveStreamCommands {
 		 * {@code if (strategy instanceof MaxLenTrimStrategy m) { m.threshold(); }} or
 		 * {@code if (strategy instanceof MinIdTrimStrategy i) { i.threshold(); }}.
 		 */
-		@Deprecated(since = "4.0", forRemoval = false)
+		@Deprecated(since = "4.0")
 		public @Nullable Long getCount() {
 			TrimStrategy strategy = options.getTrimOptions().getTrimStrategy();
 			if (strategy instanceof MaxLenTrimStrategy maxLen) {

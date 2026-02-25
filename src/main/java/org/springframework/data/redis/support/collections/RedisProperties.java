@@ -240,6 +240,12 @@ public class RedisProperties extends Properties implements RedisMap<Object, Obje
 	}
 
 	@Override
+	public Boolean expire(@NonNull Expiration expiration) {
+		return hashOps.expire(expiration);
+	}
+
+	@Override
+	@Deprecated
 	public Boolean expire(long timeout, TimeUnit unit) {
 		return hashOps.expire(timeout, unit);
 	}
@@ -252,11 +258,6 @@ public class RedisProperties extends Properties implements RedisMap<Object, Obje
 	@Override
 	public Long getExpire() {
 		return hashOps.getExpire();
-	}
-
-	@Override
-	public Boolean expire(@NonNull Expiration expiration) {
-		return hashOps.expire(expiration);
 	}
 
 	@Override

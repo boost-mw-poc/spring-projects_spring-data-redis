@@ -15,6 +15,7 @@
  */
 package org.springframework.data.redis.core;
 
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -461,6 +462,20 @@ class DefaultZSetOperations<K, V> extends AbstractOperations<K, V> implements ZS
 
 	@Nullable
 	@Override
+	public TypedTuple<V> popMin(@NonNull K key, @NonNull Duration timeout) {
+
+		Assert.notNull(timeout, "Timeout must not be null");
+		Assert.isTrue(!timeout.isNegative(), "Timeout must not be negative");
+
+		byte[] rawKey = rawKey(key);
+
+		return deserializeTuple(
+				execute(connection -> connection.bZPopMin(rawKey, TimeoutUtils.toSeconds(timeout), TimeUnit.SECONDS)));
+	}
+
+	@Nullable
+	@Deprecated
+	@Override
 	public TypedTuple<V> popMin(@NonNull K key, long timeout, @NonNull TimeUnit unit) {
 
 		byte[] rawKey = rawKey(key);
@@ -488,6 +503,20 @@ class DefaultZSetOperations<K, V> extends AbstractOperations<K, V> implements ZS
 	}
 
 	@Nullable
+	@Override
+	public TypedTuple<V> popMax(@NonNull K key, Duration timeout) {
+
+		Assert.notNull(timeout, "Timeout must not be null");
+		Assert.isTrue(!timeout.isNegative(), "Timeout must not be negative");
+
+		byte[] rawKey = rawKey(key);
+
+		return deserializeTuple(
+				execute(connection -> connection.bZPopMax(rawKey, TimeoutUtils.toSeconds(timeout), TimeUnit.SECONDS)));
+	}
+
+	@Nullable
+	@Deprecated
 	@Override
 	public TypedTuple<V> popMax(@NonNull K key, long timeout, @NonNull TimeUnit unit) {
 
