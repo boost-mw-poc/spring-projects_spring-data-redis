@@ -110,7 +110,6 @@ import org.springframework.data.redis.config.RedisListenerEndpointRegistry;
  * {@link org.springframework.messaging.handler.annotation.support.MessageHandlerMethodFactory} that is responsible for
  * building the necessary invoker to process the annotated method. By default,
  * {@link org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory} is used.
- * <p>
  *
  * @author Ilyass Bougati
  * @since 4.1
