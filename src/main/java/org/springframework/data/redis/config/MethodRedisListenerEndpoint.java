@@ -149,8 +149,7 @@ public class MethodRedisListenerEndpoint implements RedisListenerEndpoint, Smart
 	@Override
 	public void register(RedisMessageListenerContainer listenerContainer) {
 
-		Assert.state(this.messageHandlerMethodFactory != null,
-				" MessageHandlerMethodFactory not set");
+		Assert.state(this.messageHandlerMethodFactory != null, "MessageHandlerMethodFactory not set");
 
 		this.listenerContainer = listenerContainer;
 		this.messageListener = createListener();
@@ -158,6 +157,7 @@ public class MethodRedisListenerEndpoint implements RedisListenerEndpoint, Smart
 
 	public HandlerMethodMessageListenerAdapter createListener() {
 
+		Assert.state(this.messageHandlerMethodFactory != null, "MessageHandlerMethodFactory not set");
 		InvocableHandlerMethod invocableHandlerMethod = this.messageHandlerMethodFactory
 				.createInvocableHandlerMethod(this.bean, this.method);
 

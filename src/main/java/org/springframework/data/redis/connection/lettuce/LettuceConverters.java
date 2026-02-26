@@ -117,7 +117,8 @@ public abstract class LettuceConverters extends Converters {
 		return LettuceConverters::toListOfRedisClientInformation;
 	}
 
-	public static Converter<List<ScoredValue<byte[]>>, List<Tuple>> scoredValuesToTupleList() {
+	@SuppressWarnings("NullAway")
+	public static Converter<List<ScoredValue<byte[]>>, @Nullable List<Tuple>> scoredValuesToTupleList() {
 
 		return source -> {
 
@@ -449,7 +450,7 @@ public abstract class LettuceConverters extends Converters {
 			RedisNode sentinelNode = new RedisNode(sentinelNodeRedisUri.getHost(), sentinelNodeRedisUri.getPort());
 
 			RedisCredentials sentinelCredentials = sentinelNodeRedisUri.getCredentialsProvider().resolveCredentials().block();
-			if (sentinelCredentials.getPassword() != null) {
+			if (sentinelCredentials != null && sentinelCredentials.getPassword() != null) {
 				sentinelConfiguration.setSentinelPassword(sentinelCredentials.getPassword());
 			}
 
@@ -464,6 +465,10 @@ public abstract class LettuceConverters extends Converters {
 	private static void applyAuthentication(RedisURI redisURI, RedisConfiguration.WithAuthentication redisConfiguration) {
 
 		RedisCredentials credentials = redisURI.getCredentialsProvider().resolveCredentials().block();
+		if(credentials == null) {
+			return;
+		}
+
 		if (StringUtils.hasText(credentials.getUsername())) {
 			redisConfiguration.setUsername(credentials.getUsername());
 		}

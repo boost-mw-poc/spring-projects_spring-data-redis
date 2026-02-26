@@ -867,7 +867,7 @@ public interface ReactiveStreamCommands {
 		Assert.notNull(recordIds, "RecordIds must not be null");
 
 		return xDelEx(Mono.just(DeleteExCommand.stream(key).withOptions(options).records(recordIds)))
-				.flatMap(response -> Flux.fromIterable(response.getOutput()));
+				.flatMap(response -> Flux.fromIterable(response.getOutput() != null ? response.getOutput() : List.of()));
 	}
 
 	/**
@@ -891,7 +891,7 @@ public interface ReactiveStreamCommands {
 		Assert.notNull(recordIds, "RecordIds must not be null");
 
 		return xDelEx(Mono.just(DeleteExCommand.stream(key).withOptions(options).records(recordIds)))
-				.flatMap(response -> Flux.fromIterable(response.getOutput()));
+				.flatMap(response -> Flux.fromIterable(response.getOutput() != null ? response.getOutput() : List.of()));
 	}
 
 	/**
@@ -928,7 +928,7 @@ public interface ReactiveStreamCommands {
 		Assert.notNull(recordIds, "RecordIds must not be null");
 
 		return xAckDel(Mono.just(AcknowledgeDeleteCommand.stream(key).group(group).withOptions(options).records(recordIds)))
-				.flatMap(response -> Flux.fromIterable(response.getOutput()));
+				.flatMap(response -> Flux.fromIterable(response.getOutput() != null ? response.getOutput() : List.of()));
 	}
 
 	/**
@@ -954,7 +954,7 @@ public interface ReactiveStreamCommands {
 		Assert.notNull(recordIds, "RecordIds must not be null");
 
 		return xAckDel(Mono.just(AcknowledgeDeleteCommand.stream(key).group(group).withOptions(options).records(recordIds)))
-				.flatMap(response -> Flux.fromIterable(response.getOutput()));
+				.flatMap(response -> Flux.fromIterable(response.getOutput() != null ? response.getOutput() : List.of()));
 	}
 
 	/**

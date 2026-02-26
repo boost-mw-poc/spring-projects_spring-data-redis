@@ -44,6 +44,7 @@ import org.springframework.data.redis.connection.stream.PendingMessagesSummary;
 import org.springframework.data.redis.connection.stream.RecordId;
 import org.springframework.data.redis.connection.stream.StreamReadOptions;
 import org.springframework.data.redis.connection.stream.StreamRecords;
+import org.springframework.util.Assert;
 
 /**
  * Converters for Redis Stream-specific types.
@@ -80,6 +81,7 @@ class StreamConverters {
 		return XClaimOptionsToXClaimArgsConverter.INSTANCE.convert(options);
 	}
 
+	@SuppressWarnings("NullAway")
 	static XAddArgs toXAddArgs(RecordId recordId, XAddOptions options) {
 
 		XAddArgs args = new XAddArgs();
@@ -116,6 +118,7 @@ class StreamConverters {
 		return args;
 	}
 
+	@SuppressWarnings("NullAway")
 	static XTrimArgs toXTrimArgs(XTrimOptions options) {
 
 		XTrimArgs args = new XTrimArgs();

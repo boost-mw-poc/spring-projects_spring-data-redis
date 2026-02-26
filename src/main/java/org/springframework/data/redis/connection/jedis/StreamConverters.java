@@ -246,6 +246,7 @@ class StreamConverters {
 		return params;
 	}
 
+	@SuppressWarnings("NullAway")
 	public static XTrimParams toXTrimParams(XTrimOptions options) {
 
 		XTrimParams params = new XTrimParams();
