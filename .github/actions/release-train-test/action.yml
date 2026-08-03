@@ -1,0 +1,20 @@
+name: Test Release
+runs:
+  using: composite
+  steps:
+    - name: Settings.xml
+      shell: bash
+      run: |
+        if [[ -n "${RELEASE_TRAIN_SETTINGS_XML}" ]]; then
+          echo "::notice::Writing provided settings-xml input to release-train-settings.xml"
+          echo "${RELEASE_TRAIN_SETTINGS_XML}" > release-train-settings.xml
+        fi
+    - name: Load CI properties
+      uses: spring-projects/spring-data-build-commercial/actions/env-config@main
+    - name: Setup Redis
+      uses: ./.github/actions/setup-redis/
+      with:
+        version: latest
+    - name: Test Release
+      shell: bash
+      run: ./mvnw --batch-mode --settings release-train-settings.xml clean verify --activate-profiles releaseTrain,release,ci -Dgpg.skip -DrunLongTests=false
